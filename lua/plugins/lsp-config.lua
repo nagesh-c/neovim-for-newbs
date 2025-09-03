@@ -9,6 +9,10 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     lazy = false,
+    ensure_install = {
+      "clangd",
+      "lua_ls",
+    },
     opts = {
       auto_install = true,
     },
@@ -20,18 +24,12 @@ return {
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
       local lspconfig = require("lspconfig")
-      lspconfig.tsserver.setup({
-        capabilities = capabilities
-      })
-      lspconfig.solargraph.setup({
-        capabilities = capabilities
-      })
-      lspconfig.html.setup({
-        capabilities = capabilities
-      })
       lspconfig.lua_ls.setup({
         capabilities = capabilities
       })
+      lspconfig.clangd.setup {
+        capabilities = capabilities,
+      }
 
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})

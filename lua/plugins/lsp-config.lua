@@ -29,6 +29,18 @@ return {
       })
       lspconfig.clangd.setup {
         capabilities = capabilities,
+        cmd = {
+          "clangd",
+          "--background-index",
+          "--suggest-missing-includes",
+          "--cross-file-rename",
+          "--completion-style=detailed",
+        },
+        root_dir = require("lspconfig.util").root_pattern(
+          "compile_commands.json",
+          "compile_flags.txt",
+          ".git"
+        ),
       }
 
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})

@@ -49,4 +49,9 @@ return {
       vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
     end,
   },
+
+  vim.diagnostic.config({
+    signs = false,
+    underline = false,
+  })
 }

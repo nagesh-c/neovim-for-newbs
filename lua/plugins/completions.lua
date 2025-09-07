@@ -99,7 +99,7 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<CR>"] = cmp.mapping.confirm({ select = false }),
 
           -- Accept and refine with CodeCompanion inline
           ["<C-r>"] = cmp.mapping(function(fallback)
@@ -113,10 +113,43 @@ return {
               fallback()
             end
           end, { "i", "s" }),
+
+          -- Tab for completion/snippet navigation
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+
+          -- Accept + refine inline with CodeCompanion
+          ["<C-r>"] = cmp.mapping(function(fallback)
+            local entry = cmp.get_selected_entry()
+            if entry then
+              cmp.confirm({ select = true })
+              vim.defer_fn(function()
+                vim.cmd("CodeCompanionInlineEvaluate")
+              end, 100)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
         sources = cmp.config.sources({
-          { name = "copilot", group_index = 1 }, -- Copilot AI completions
           { name = "nvim_lsp", group_index = 1 }, -- LSP completions
+          { name = "copilot", group_index = 1 }, -- Copilot AI completions
           { name = "luasnip" }, -- Snippets
           { name = "buffer" },
           { name = "path" },
@@ -125,6 +158,13 @@ return {
           format = require("lspkind").cmp_format({
             maxwidth = 50,
             ellipsis_char = "...",
+            menu = {
+              nvim_lsp = "[LSP]",
+              copilot = "[AI]",
+              luasnip = "[Snip]",
+              buffer = "[Buf]",
+              path = "[Path]",
+            },
           }),
         },
       })

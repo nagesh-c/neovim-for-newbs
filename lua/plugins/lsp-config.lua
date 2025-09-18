@@ -35,6 +35,7 @@ return {
           "--suggest-missing-includes",
           "--cross-file-rename",
           "--completion-style=detailed",
+          "--header-insertion=never",
         },
         root_dir = require("lspconfig.util").root_pattern(
           "compile_commands.json",

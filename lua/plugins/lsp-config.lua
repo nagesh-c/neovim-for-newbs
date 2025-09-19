@@ -23,11 +23,11 @@ return {
     config = function()
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      local lspconfig = require("lspconfig")
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities
-      })
-      lspconfig.clangd.setup {
+      vim.lsp.config.lua_ls = {
+        capabilities = capabilities,
+      }
+
+      vim.lsp.config.clangd = {
         capabilities = capabilities,
         cmd = {
           "clangd",
@@ -37,12 +37,11 @@ return {
           "--completion-style=detailed",
           "--header-insertion=never",
         },
-        root_dir = require("lspconfig.util").root_pattern(
-          "compile_commands.json",
-          ".git"
-        ),
+        root_markers = { "compile_commands.json", ".git" },
       }
 
+      vim.lsp.enable('lua_ls')
+      vim.lsp.enable('clangd')
       vim.keymap.set("n", "K", vim.lsp.buf.hover, {})
       vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, {})
       vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, {})
